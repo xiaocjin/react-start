@@ -23,8 +23,6 @@ module.exports = function(options) {
     lessLoaders = extractForProduction(lessLoaders);
   }
 
-  var jsLoaders = ['babel'];
-
   return {
     entry: options.production ? './app/index.jsx' : [
       'webpack-dev-server/client?http://localhost:8080',
@@ -49,13 +47,13 @@ module.exports = function(options) {
       loaders: [
         {
           test: /\.js$/,
-          exclude: /node_modules/,
-          loaders: jsLoaders,
+          exclude: /(node_modules|bower_components)/,
+          loader: "babel-loader",
         },
         {
           test: /\.jsx$/,
-          exclude: /node_modules/,
-          loaders: options.production ? jsLoaders : ['react-hot'].concat(jsLoaders),
+          exclude: /(node_modules|bower_components)/,
+          loader: "babel-loader",
         },
         {
           test: /\.css$/,
@@ -115,7 +113,7 @@ module.exports = function(options) {
     ] : [
       new HtmlWebpackPlugin({
         template: './conf/tmpl.html',
-      }),
+      })
     ],
   };
 };
