@@ -5,13 +5,13 @@ import assign from 'lodash/object/assign'
 
 const initialState =
 {
-  id: 0,
+  id: 1,
   schoolName: 'ces1',
   introduction: 'ces2'
 }
 
 
-export default function schools(state = initialState, action = {}) {
+export default function schools(state = initialState, action) {
   switch (action.type) {
     case REQUEST_SCHOOL_INFO:
       console.log(REQUEST_SCHOOL_INFO, action, state);
@@ -22,9 +22,9 @@ export default function schools(state = initialState, action = {}) {
       if (action.data) {
         const sc = action.data;
         const obj = {
-          id: sc.data.id,
-          schoolName: sc.data.schoolName,
-          introduction: sc.data.introduction
+          id: sc.id,
+          schoolName: sc.schoolName,
+          introduction: sc.introduction
         }
         console.log(obj)
         return obj

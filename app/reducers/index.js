@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux'
 import school from './school.js'
-import { routeReducer } from 'redux-simple-router'
+import { routerReducer } from 'react-router-redux'
 
 const rootReducer = combineReducers({
-  routing: routeReducer,
-  school
+    school,
+    routing: routerReducer
 });
 
 export default rootReducer

@@ -13,7 +13,7 @@ function requestSchoolInfo() {
   }
 }
 
-function receiveSchoolInfo(data, json) {
+export function receiveSchoolInfo(data, json) {
   console.log(data, json);
   return {
     type: RECEIVE_SCHOOL_INFO,
