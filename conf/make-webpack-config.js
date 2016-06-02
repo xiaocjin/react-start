@@ -1,6 +1,8 @@
 var fs = require('fs');
+var path = require('path');
 var webpack = require('webpack');
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
+//var autoprefixer = require('autoprefixer');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 function extractForProduction(loaders) {
@@ -8,10 +10,10 @@ function extractForProduction(loaders) {
 }
 
 module.exports = function(options) {
-  options.lint = fs.existsSync(__dirname + '/../.eslintrc') && options.lint !== false;
+  options.lint = fs.existsSync(path.resolve(__dirname, '..', '.eslintrc')) && options.lint !== false;
 
-  var localIdentName = options.production ? '[hash:base64]' : '[path]-[local]-[hash:base64:5]';
-  var cssLoaders = 'style!css?localIdentName=' + localIdentName + '!autoprefixer?browsers=last 2 versions';
+  //var localIdentName = options.production ? '[hash:base64]' : '[path]-[local]-[hash:base64:5]';
+  var cssLoaders = 'style!css';
   var scssLoaders = cssLoaders + '!sass';
   var sassLoaders = scssLoaders + '?indentedSyntax=sass';
   var lessLoaders = cssLoaders + '!less';
@@ -39,7 +41,7 @@ module.exports = function(options) {
     module: {
       preLoaders: options.lint ? [
         {
-          test: /\.jsx?$/,
+          test: /\.js$/,
           exclude: /node_modules/,
           loader: 'eslint',
         },
@@ -48,7 +50,7 @@ module.exports = function(options) {
         {
           test: /\.js$/,
           exclude: /(node_modules|bower_components)/,
-          loader: "babel-loader",
+          loaders: ['babel'],
         },
         {
           test: /\.jsx$/,
@@ -73,30 +75,30 @@ module.exports = function(options) {
         },
         {
           test: /\.png$/,
-          loader: "url?limit=100000&mimetype=image/png",
+          loader: 'url?limit=100000&mimetype=image/png',
         },
         {
           test: /\.svg$/,
-          loader: "url?limit=100000&mimetype=image/svg+xml",
+          loader: 'url?limit=100000&mimetype=image/svg+xml',
         },
         {
           test: /\.gif$/,
-          loader: "url?limit=100000&mimetype=image/gif",
+          loader: 'url?limit=100000&mimetype=image/gif',
         },
         {
           test: /\.jpg$/,
-          loader: "file",
+          loader: 'file',
         },
       ],
     },
     resolve: {
-      extensions: ['', '.js', '.jsx', '.sass', '.scss', '.less', '.css'],
+      extensions: ['', '.js', '.jsx','.sass', '.scss', '.less', '.css'],
     },
     plugins: options.production ? [
       // Important to keep React file size down
       new webpack.DefinePlugin({
-        "process.env": {
-          "NODE_ENV": JSON.stringify("production"),
+        'process.env': {
+          'NODE_ENV': JSON.stringify('production'),
         },
       }),
       new webpack.optimize.DedupePlugin(),
@@ -105,15 +107,23 @@ module.exports = function(options) {
           warnings: false,
         },
       }),
-      new ExtractTextPlugin("app.[hash].css"),
       new HtmlWebpackPlugin({
         template: './conf/tmpl.html',
         production: true,
       }),
+      new ExtractTextPlugin('app.[hash].css'),
     ] : [
       new HtmlWebpackPlugin({
+        hash:false,
         template: './conf/tmpl.html',
-      })
+      }),
     ],
+    //postcss: [autoprefixer],
+    externals: {
+      'cheerio': 'window',
+      'react/addons': true,
+      'react/lib/ExecutionEnvironment': true,
+      'react/lib/ReactContext': true
+    }
   };
 };
